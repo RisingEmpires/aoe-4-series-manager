@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<script src="https://cdn.tailwindcss.com"></script>
+	<style>
+		body {
+			font-family: sans-serif;
+		}
+
+		.monospace {
+			font-family: monospace;
+		}
+
+		.leftSideButton {
+			width: 100%;
+			background-color: rgb(163, 163, 64);
+			color: black;
+			padding: 14px 20px;
+			margin: 4px 0;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+		}
+
+		.rightSideButton {
+			width: 100%;
+			background-color: rgb(156, 55, 156);
+			color: black;
+			padding: 14px 20px;
+			margin: 4px 0;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+		}
+
+		input[type=number] {
+			color: black;
+		}
+
+		input[type=text] {
+			color: black;
+		}
+
+		.civDropdown, .mapDropdown {
+			color: black;
+		}
+
+		.mapDiv {
+			border: 2px solid white;
+			border-style: none solid none solid;
+		}
+
+		.gameDiv {
+			border: 2px solid white;
+			border-style: none none solid none;
+			padding-left: -8%;
+			padding-right: -8%;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="root"></div>
+	<script type="module" src="./series-manager-bootstrap.tsx"></script>
+</body>
+
+</html>

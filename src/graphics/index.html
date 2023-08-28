@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<script src="https://cdn.tailwindcss.com"></script>
+	<style>
+		body {
+			font-family: sans-serif;
+		}
+
+		.monospace {
+			font-family: monospace;
+		}
+
+		@keyframes rotate {
+			to {
+				--angle: 360deg;
+			}
+		}
+
+		@property --angle {
+			syntax: "<angle>";
+			initial-value: 0deg;
+			inherits: false;
+		}
+
+		.games {
+			position: absolute;
+			transform: translate(-50%, -50%);
+			top: 50%;
+			left: 50%;
+		}
+
+		.civPick {
+			width: 35px;
+			margin: 5px 0px;
+			border: 2px solid #0000;
+			border-radius: 4%;
+			height: 100%;
+			background: linear-gradient(#191212, #191212) padding-box, linear-gradient(var(--angle),
+					#9c683b,
+					#FFD700) border-box;
+			animation: 8s rotate linear infinite;
+		}
+
+		.civPicks {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: space-evenly;
+		}
+
+		.leftPicks {
+			transform: translate(50%, 0);
+		}
+
+		.rightPicks {
+			transform: translate(-50%, 0);
+		}
+
+		.map {
+			width: 160px;
+			height: 160px;
+		}
+
+		.civLose {
+			filter: brightness(65%);
+		}
+
+		.loseIcon {
+			transform: translate(-50%, -50%);
+			position: absolute;
+			font-size: 150%;
+
+			top: 47%;
+			left: 50%;
+			color: #ffffff;
+			-webkit-text-stroke-width: 1px;
+			-webkit-text-stroke-color: black;
+		}
+
+		.civContainer {
+			position: relative;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="root"></div>
+	<script type="module" src="./index-bootstrap.tsx"></script>
+</body>
+
+</html>
