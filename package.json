@@ -63,6 +63,7 @@
     "@types/react": "*",
     "@types/react-dom": "*",
     "klona": "^2.0.6",
+    "nodecg-cli": "^8.6.8",
     "react": "*",
     "react-dom": "*",
     "react-select": "^5.7.4",
@@ -78,7 +79,8 @@
     "@parcel/validator-typescript": "*",
     "@types/node": "*",
     "concurrently": "*",
-    "glob": "*",
+    "nodecg-cli": "^8.6.8",
+    "glob": "10.3.0",
     "nodemon": "*",
     "trash-cli": "*",
     "typescript": "*"
