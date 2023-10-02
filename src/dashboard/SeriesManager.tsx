@@ -30,6 +30,9 @@ export function SeriesManager() {
 	const [addToScore, set_addToScore] = useReplicant<boolean>('addToScore', false)
 	const [setMapToRandom, set_setMapToRandom] = useReplicant<boolean>('setMapToRandom', false)
 
+	const [leftName, set_leftName] = useReplicant<string>('leftName', '', {namespace: 'aoe-4-civ-draft'});
+	const [rightName, set_rightName] = useReplicant<string>('rightName', '', {namespace: 'aoe-4-civ-draft'});
+
 	const leftWin = (event: any) => {
 		event.preventDefault();
 		console.log("Left Win")
@@ -59,10 +62,10 @@ export function SeriesManager() {
 			<div className='flex flex-row justify-center w-full'>
 				<hr className='m-4 w-1/3' />
 				<button onClick={leftWin} className="leftSideButton mx-4 px-2 w-36" name="swapTeams">
-					Left Side Win
-				</button>
+					{leftName ? `${leftName} Win` : 'Left Side Win'}
+				</button> 
 				<button onClick={rightWin} className="rightSideButton mx-4 px-2 w-36" name="swapTeams">
-					Right Side Win
+					{leftName ? `${rightName} Win` : 'Right Side Win'}
 				</button>
 				<hr className='m-4 w-1/3' />
 
