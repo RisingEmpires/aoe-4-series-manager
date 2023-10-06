@@ -35,15 +35,18 @@ const GameDisplay = ({ id }: Game) => {
 	const [rightSideCivs, set_rightSideCivs] = useReplicant<DropdownOption[]>(`rightSideCivs${id}`, [{ value: '/assets/aoe4-map-selector/maps/Random.png', label: 'Random' }])
 	const [rightSideCount, set_rightSideCount] = useReplicant<number>(`rightSideCount${id}`, 1)
 
-	const [leftSideWin, set_leftSideWin] = useReplicant<boolean>(`leftSideWin${id}`, false)
+	//const [leftSideWin, set_leftSideWin] = useReplicant<boolean>(`leftSideWin${id}`, false)
+	//<img className={gameState.value == 'leftWin' ? 'm-auto civPick leftPick' : 'm-auto civPick leftPick civLose'} src={leftSideCivs[i]?.value} />
+
+	const [gameState, set_gameState] = useReplicant<DropdownOption>(`gameState${id}`, { value: 'tbd', label: 'TBD' })
 
 	return (
 		<div className='flex flex-row px-4'>
 			<div className='civPicks leftPicks'>
 				{new Array(leftSideCount).fill(undefined).map((_, i) => (
 					<div className="civContainer">
-						<img className={leftSideWin ? 'm-auto civPick leftPick' : 'm-auto civPick leftPick civLose'} src={leftSideCivs[i]?.value} />
-						{leftSideWin ? '' : <div className='loseIcon'>╲</div>}
+						<img className={`m-auto civPick leftPick ${gameState.value == 'rightWin' ? 'civLose' : '' }`} src={leftSideCivs[i]?.value} />	
+						{gameState.value == 'rightWin' ? <div className='loseIcon'>╲</div> : ''}
 					</div>
 				))}
 			</div>
@@ -55,8 +58,8 @@ const GameDisplay = ({ id }: Game) => {
 			<div className='civPicks rightPicks'>
 				{new Array(rightSideCount).fill(undefined).map((_, i) => (
 					<div className="civContainer">
-						<img className={leftSideWin ? 'm-auto civPick rightPick civLose' : 'm-auto civPick rightPick'} src={rightSideCivs[i]?.value} />
-						{!leftSideWin ? '' : <div className='loseIcon'>╲</div>}
+						<img className={`m-auto civPick rightPick ${gameState.value == 'leftWin' ? 'civLose ': ''} `} src={rightSideCivs[i]?.value} />
+						{gameState.value == 'leftWin' ? <div className='loseIcon'>╲</div> : ''}
 					</div>
 				))}
 			</div>

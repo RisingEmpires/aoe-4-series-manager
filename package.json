@@ -69,6 +69,7 @@
     "react-select": "^5.7.4",
     "react-tooltip": "^5.21.1",
     "ts-node": "*",
+    "tw-elements-react": "^1.0.0-alpha1",
     "use-nodecg": "^0.4.1-2"
   },
   "devDependencies": {
@@ -79,8 +80,8 @@
     "@parcel/validator-typescript": "*",
     "@types/node": "*",
     "concurrently": "*",
-    "nodecg-cli": "^8.6.8",
     "glob": "10.3.0",
+    "nodecg-cli": "^8.6.8",
     "nodemon": "*",
     "trash-cli": "*",
     "typescript": "*"

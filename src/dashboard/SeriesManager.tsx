@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useReplicant } from 'use-nodecg';
 import Select, { type SingleValue } from 'react-select';
 import { NodeCG } from '@nodecg/types/types/nodecg';
+import { TECollapse, TERipple } from "tw-elements-react";
 
 interface Game {
 	leftSideWin: boolean;
@@ -23,6 +24,9 @@ interface DropdownOption {
 
 export function SeriesManager() {
 
+	const [showSettings, set_showSettings] = useState(false);
+	const toggleShowSettings = () => set_showSettings(!showSettings);
+
 	const [games, set_games] = useReplicant<Game[]>('games', [])
 	const [gamesCount, set_gamesCount] = useReplicant<number>('gamesCount', 0)
 
@@ -30,8 +34,8 @@ export function SeriesManager() {
 	const [addToScore, set_addToScore] = useReplicant<boolean>('addToScore', false)
 	const [setMapToRandom, set_setMapToRandom] = useReplicant<boolean>('setMapToRandom', false)
 
-	const [leftName, set_leftName] = useReplicant<string>('leftName', '', {namespace: 'aoe-4-civ-draft'});
-	const [rightName, set_rightName] = useReplicant<string>('rightName', '', {namespace: 'aoe-4-civ-draft'});
+	const [leftName, set_leftName] = useReplicant<string>('leftName', '', { namespace: 'aoe-4-civ-draft' });
+	const [rightName, set_rightName] = useReplicant<string>('rightName', '', { namespace: 'aoe-4-civ-draft' });
 
 	const leftWin = (event: any) => {
 		event.preventDefault();
@@ -49,21 +53,26 @@ export function SeriesManager() {
 
 	return (
 		<>
-			<div>
-				<label>Reset Civ on Win</label>
-				<input type='checkbox' checked={resetDraft} onChange={(() => set_resetDraft(!resetDraft))} />
-				<br/>
-				<label>Add To Score</label>
-				<input type='checkbox' checked={addToScore} onChange={(() => set_addToScore(!addToScore))} />
-				<br/>
-				<label>Set Map to Random on Win</label>
-				<input type='checkbox' checked={setMapToRandom} onChange={(() => set_setMapToRandom(!setMapToRandom))} />
-			</div>
+			<button className='absolute right-4' onClick={toggleShowSettings}>
+				<svg fill='whitesmoke' xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path d="M24 13.616v-3.232c-1.651-.587-2.694-.752-3.219-2.019v-.001c-.527-1.271.1-2.134.847-3.707l-2.285-2.285c-1.561.742-2.433 1.375-3.707.847h-.001c-1.269-.526-1.435-1.576-2.019-3.219h-3.232c-.582 1.635-.749 2.692-2.019 3.219h-.001c-1.271.528-2.132-.098-3.707-.847l-2.285 2.285c.745 1.568 1.375 2.434.847 3.707-.527 1.271-1.584 1.438-3.219 2.02v3.232c1.632.58 2.692.749 3.219 2.019.53 1.282-.114 2.166-.847 3.707l2.285 2.286c1.562-.743 2.434-1.375 3.707-.847h.001c1.27.526 1.436 1.579 2.019 3.219h3.232c.582-1.636.75-2.69 2.027-3.222h.001c1.262-.524 2.12.101 3.698.851l2.285-2.286c-.744-1.563-1.375-2.433-.848-3.706.527-1.271 1.588-1.44 3.221-2.021zm-12 2.384c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4z" /></svg>
+			</button>
+			<TECollapse show={showSettings} className='flex flex-col pb-8'>
+				<div key={'settings'}>
+					<label>Reset Civ on Win</label>
+					<input type='checkbox' checked={resetDraft} onChange={(() => set_resetDraft(!resetDraft))} />
+					<br />
+					<label>Add To Score</label>
+					<input type='checkbox' checked={addToScore} onChange={(() => set_addToScore(!addToScore))} />
+					<br />
+					<label>Set Map to Random on Win</label>
+					<input type='checkbox' checked={setMapToRandom} onChange={(() => set_setMapToRandom(!setMapToRandom))} />
+				</div>
+			</TECollapse>
 			<div className='flex flex-row justify-center w-full'>
 				<hr className='m-4 w-1/3' />
 				<button onClick={leftWin} className="leftSideButton mx-4 px-2 w-36" name="swapTeams">
 					{leftName ? `${leftName} Win` : 'Left Side Win'}
-				</button> 
+				</button>
 				<button onClick={rightWin} className="rightSideButton mx-4 px-2 w-36" name="swapTeams">
 					{leftName ? `${rightName} Win` : 'Right Side Win'}
 				</button>
@@ -108,14 +117,21 @@ const GameDisplay = ({ id }: Game) => {
 	const [map, set_map] = useReplicant<DropdownOption>(`map${id}`, { value: '/assets/aoe4-map-selector/maps/Random.png', label: 'Random' })
 
 	const [leftSideCivs, set_leftSideCivs] = useReplicant<DropdownOption[]>(`leftSideCivs${id}`, [{ value: '/assets/aoe4-map-selector/maps/Random.png', label: 'Random' }])
-	const [leftSideCount, set_leftSideCount] = useReplicant<number>(`leftSideCount${id}`, 1)
+	const [leftSideCount, set_leftSideCount] = useReplicant<number>(`leftSideCount${id}`, 0)
 
 	const [rightSideCivs, set_rightSideCivs] = useReplicant<DropdownOption[]>(`rightSideCivs${id}`, [{ value: '/assets/aoe4-map-selector/maps/Random.png', label: 'Random' }])
-	const [rightSideCount, set_rightSideCount] = useReplicant<number>(`rightSideCount${id}`, 1)
+	const [rightSideCount, set_rightSideCount] = useReplicant<number>(`rightSideCount${id}`, 0)
 
-	const [leftSideWin, set_leftSideWin] = useReplicant<boolean>(`leftSideWin${id}`, false)
+	const [gameState, set_gameState] = useReplicant<DropdownOption>(`gameState${id}`, { value: 'tbd', label: 'TBD' })
 
 	const handleMapChange = (selectedOption) => { set_map(selectedOption) }
+	const handleGameStateChange = (selectedOption) => { set_gameState(selectedOption) }
+
+	let gameStateOptions: DropdownOption[] = [
+		{ value: 'leftWin', label: 'Left Win' },
+		{ value: 'rightWin', label: 'Right Win' },
+		{ value: 'tbd', label: 'TBD' }
+	]
 
 	//Set the options in the dropdown menu to avaliable maps from /assets/aoe4-map-selector/maps
 	useEffect(() => {
@@ -155,6 +171,8 @@ const GameDisplay = ({ id }: Game) => {
 		console.log('Right Side had no civs selected')
 	}
 
+	console.log(map)
+
 	return (
 		<div className='gameDiv pb-4'>
 			<h1 className='flex justify-center text-2xl'>Game {id}</h1>
@@ -170,7 +188,7 @@ const GameDisplay = ({ id }: Game) => {
 							set_leftSideCount(parseInt(event.target.value, 10));
 						}}
 					/>
-					{new Array(leftSideCount).fill(undefined).map((_, i) => (
+					{leftSideCivs && leftSideCivs.length > 0 && new Array(leftSideCount).fill(undefined).map((_, i) => (
 						<CivDropdown key={i} civs={civsOptions} target={i} replicant={`leftSideCivs${id}`} value={leftSideCivs[i] || null} />
 					))}
 				</div>
@@ -179,8 +197,7 @@ const GameDisplay = ({ id }: Game) => {
 					<Select className=" mapDropdown" options={mapsOptions} onChange={handleMapChange} value={map} placeholder={'Select Map'} />
 					<img className="m-auto" src={map?.value} style={{ width: '140px', padding: '10px 10px' }} />
 					<div className='flex flex-row justify-center items-center'>
-						<label className="pr-4">Left Side Win?</label>
-						<input className="w-6 h-6" type='checkbox' checked={leftSideWin} onChange={(() => set_leftSideWin(!leftSideWin))} />
+						<Select className="civDropdown w-48" options={gameStateOptions} onChange={handleGameStateChange} value={gameState} />
 					</div>
 				</div>
 
@@ -195,7 +212,7 @@ const GameDisplay = ({ id }: Game) => {
 							set_rightSideCount(parseInt(event.target.value, 10));
 						}}
 					/>
-					{new Array(rightSideCount).fill(undefined).map((_, i) => (
+					{rightSideCivs && rightSideCivs.length > 0 && new Array(rightSideCount || 0).fill(undefined).map((_, i) => (
 						<CivDropdown key={i} civs={civsOptions} target={i} replicant={`rightSideCivs${id}`} value={rightSideCivs[i] || null} />
 					))}
 
@@ -226,7 +243,7 @@ const CivDropdown = ({ civs, target, replicant, value }: CivDropdownProps) => {
 	);
 
 	return (
-		<div className='w-full'>
+		<div className='w-full py-2'>
 			<Select className="civDropdown" options={civs} onChange={handleChange} value={value} />
 		</div>
 	);

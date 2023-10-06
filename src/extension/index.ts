@@ -31,6 +31,8 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
 	let setMapToRandom = nodecg.Replicant<boolean>(`setMapToRandom`)
 
 	let updateDraft = nodecg.Replicant<boolean>(`updateDraft`, 'aoe-4-civ-draft')
+
+	let lockBans = nodecg.Replicant<boolean>(`lockBans`, 'aoe-4-civ-draft')
 	
 	let leftScore = nodecg.Replicant<number>(`leftScore`, 'aoe4-score-display', { defaultValue: 0})
 	let rightScore = nodecg.Replicant<number>(`rightScore`, 'aoe4-score-display', { defaultValue: 0})
@@ -47,7 +49,8 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
 		let rightSideCivs = nodecg.Replicant<DropdownOption[]>(`rightSideCivs${id}`)
 		let rightSideCount = nodecg.Replicant<number>(`rightSideCount${id}`)
 
-		let leftSideWinReplicant = nodecg.Replicant<boolean>(`leftSideWin${id}`)
+		//let leftSideWinReplicant = nodecg.Replicant<boolean>(`leftSideWin${id}`)
+		let gameState = nodecg.Replicant<DropdownOption>(`gameState${id}`)
 
 		await new Promise(r => setTimeout(r, 200));
 
@@ -57,7 +60,11 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
 		rightSideCivs.value = klona(rightPicks.value)
 		rightSideCount.value = klona(rightPicksCount.value)
 
-		leftSideWinReplicant.value = leftSideWin
+		if(leftSideWin){
+			gameState.value = ({ value: 'leftWin', label: 'Left Win' })
+		} else {
+			gameState.value = ({ value: 'rightWin', label: 'Right Win' })
+		}
 
 		gamesCount.value++
 
@@ -68,11 +75,13 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
 			rightPicks.value = [{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" }, { value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" }]
 			//rightPicksCount.value = 1
 			
-			leftBan.value = [{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" }, { value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" }]
-			//leftBanCount.value = 0
-			
-			rightBan.value = [{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" }, { value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" }]
-			//rightBanCount.value = 0
+			if(lockBans.value == false){
+				leftBan.value = [{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" }, { value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" }]
+				//leftBanCount.value = 0
+
+				rightBan.value = [{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" }, { value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" }]
+				//rightBanCount.value = 0
+			}
 
 			updateDraft.value = !updateDraft.value
 		}
