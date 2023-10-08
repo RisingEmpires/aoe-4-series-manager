@@ -17,7 +17,7 @@ export function Index() {
 	const [gamesCount, set_gamesCount] = useReplicant<number>('gamesCount', 0)
 
 	return (
-		<div className='games flex flex-row'>
+		<div className='series-games flex flex-row'>
 			{new Array(gamesCount).fill(undefined).map((_, i) => (
 				<GameDisplay key={i} id={i + 1} />
 			))}
@@ -40,26 +40,38 @@ const GameDisplay = ({ id }: Game) => {
 
 	const [gameState, set_gameState] = useReplicant<DropdownOption>(`gameState${id}`, { value: 'tbd', label: 'TBD' })
 
+	const [theme, set_theme] = useReplicant<{ value: string; label: string; }>('theme', { value: '../../../assets/nodecg-themer/themes/default.css', label: 'default' }, { namespace: 'nodecg-themer' });
+
+	const [themeDiv, set_themeDiv] = useState(<></>)
+
+	useEffect(() => {
+		console.log(theme)
+		if (!theme) return;
+		console.log(theme)
+		set_themeDiv(<link rel='stylesheet' type='text/css' href={theme.value} />)
+	}, [theme])
+
 	return (
 		<div className='flex flex-row px-4'>
-			<div className='civPicks leftPicks'>
+			{themeDiv}
+			<div className='series-civPicks series-leftPicks'>
 				{new Array(leftSideCount).fill(undefined).map((_, i) => (
-					<div className="civContainer">
-						<img className={`m-auto civPick leftPick ${gameState.value == 'rightWin' ? 'civLose' : '' }`} src={leftSideCivs[i]?.value} />	
-						{gameState.value == 'rightWin' ? <div className='loseIcon'>╲</div> : ''}
+					<div className="series-civContainer">
+						<img className={`series-civPick series-leftPick ${gameState.value == 'rightWin' ? 'series-civLose' : ''}`} src={leftSideCivs[i]?.value} />
+						{gameState.value == 'rightWin' ? <div className='series-loseIcon'>╲</div> : ''}
 					</div>
 				))}
 			</div>
 
-			<div className='map'>
-				<img className="m-auto map" src={map?.value} />
+			<div className='series-map'>
+				<img className="m-auto series-map" src={map?.value} />
 			</div>
 
-			<div className='civPicks rightPicks'>
+			<div className='series-civPicks series-rightPicks'>
 				{new Array(rightSideCount).fill(undefined).map((_, i) => (
-					<div className="civContainer">
-						<img className={`m-auto civPick rightPick ${gameState.value == 'leftWin' ? 'civLose ': ''} `} src={rightSideCivs[i]?.value} />
-						{gameState.value == 'leftWin' ? <div className='loseIcon'>╲</div> : ''}
+					<div className="series-civContainer">
+						<img className={`series-civPick series-rightPick ${gameState.value == 'leftWin' ? 'series-civLose ' : ''} `} src={rightSideCivs[i]?.value} />
+						{gameState.value == 'leftWin' ? <div className='series-loseIcon'>╲</div> : ''}
 					</div>
 				))}
 			</div>
