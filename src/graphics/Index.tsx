@@ -14,10 +14,22 @@ interface DropdownOption {
 
 export function Index() {
 
+	const [theme, set_theme] = useReplicant<{ value: string; label: string; }>('theme', { value: '../../../assets/nodecg-themer/themes/default.css', label: 'default' }, { namespace: 'nodecg-themer' });
+
+	const [themeDiv, set_themeDiv] = useState(<></>)
+
+	useEffect(() => {
+		console.log(theme)
+		if (!theme) return;
+		console.log(theme)
+		set_themeDiv(<link rel='stylesheet' type='text/css' href={theme.value} />)
+	}, [theme])
+
 	const [gamesCount, set_gamesCount] = useReplicant<number>('gamesCount', 0)
 
 	return (
 		<div className='series-games flex flex-row'>
+			{themeDiv}
 			{new Array(gamesCount).fill(undefined).map((_, i) => (
 				<GameDisplay key={i} id={i + 1} />
 			))}
@@ -40,20 +52,10 @@ const GameDisplay = ({ id }: Game) => {
 
 	const [gameState, set_gameState] = useReplicant<DropdownOption>(`gameState${id}`, { value: 'tbd', label: 'TBD' })
 
-	const [theme, set_theme] = useReplicant<{ value: string; label: string; }>('theme', { value: '../../../assets/nodecg-themer/themes/default.css', label: 'default' }, { namespace: 'nodecg-themer' });
 
-	const [themeDiv, set_themeDiv] = useState(<></>)
-
-	useEffect(() => {
-		console.log(theme)
-		if (!theme) return;
-		console.log(theme)
-		set_themeDiv(<link rel='stylesheet' type='text/css' href={theme.value} />)
-	}, [theme])
 
 	return (
-		<div className='flex flex-row px-4'>
-			{themeDiv}
+		<div className='flex flex-row px-4 series-game'>
 			<div className='series-civPicks series-leftPicks'>
 				{new Array(leftSideCount).fill(undefined).map((_, i) => (
 					<div className="series-civContainer">
