@@ -13,13 +13,19 @@ interface Game {
 	rightSideCivs?: DropdownOption[];
 	rightSideCount?: number;
 
-	map?: DropdownOption;
+	map?: ValueLabelPair;
 	id: number;
 }
 
-interface DropdownOption {
+interface ValueLabelPair {
 	value: string;
 	label: string;
+}
+
+interface DropdownOption {
+    value: string;
+    label: string;
+    picked?: boolean;
 }
 
 export function SeriesManager() {
@@ -108,13 +114,13 @@ export function SeriesManager() {
 
 const GameDisplay = ({ id }: Game) => {
 
-	const [mapsOptions, set_mapsOptions] = useState<DropdownOption[]>([]);
+	const [mapsOptions, set_mapsOptions] = useState<ValueLabelPair[]>([]);
 	const [maps, set_maps] = useReplicant<Array<any>>('assets:maps', [], { namespace: 'aoe4-map-selector' });
 
-	const [civsOptions, set_civsOptions] = useState<DropdownOption[]>([]);
+	const [civsOptions, set_civsOptions] = useState<ValueLabelPair[]>([]);
 	const [civs, set_civs] = useReplicant<NodeCG.AssetFile[]>('assets:civs', [], { namespace: 'aoe-4-civ-draft' });
 
-	const [map, set_map] = useReplicant<DropdownOption>(`map${id}`, { value: '/assets/aoe4-map-selector/maps/Random.png', label: 'Random' })
+	const [map, set_map] = useReplicant<ValueLabelPair>(`map${id}`, { value: '/assets/aoe4-map-selector/maps/Random.png', label: 'Random' })
 
 	const [leftSideCivs, set_leftSideCivs] = useReplicant<DropdownOption[]>(`leftSideCivs${id}`, [{ value: '/assets/aoe4-map-selector/maps/Random.png', label: 'Random' }])
 	const [leftSideCount, set_leftSideCount] = useReplicant<number>(`leftSideCount${id}`, 0)
@@ -122,12 +128,12 @@ const GameDisplay = ({ id }: Game) => {
 	const [rightSideCivs, set_rightSideCivs] = useReplicant<DropdownOption[]>(`rightSideCivs${id}`, [{ value: '/assets/aoe4-map-selector/maps/Random.png', label: 'Random' }])
 	const [rightSideCount, set_rightSideCount] = useReplicant<number>(`rightSideCount${id}`, 0)
 
-	const [gameState, set_gameState] = useReplicant<DropdownOption>(`gameState${id}`, { value: 'tbd', label: 'TBD' })
+	const [gameState, set_gameState] = useReplicant<ValueLabelPair>(`gameState${id}`, { value: 'tbd', label: 'TBD' })
 
 	const handleMapChange = (selectedOption) => { set_map(selectedOption) }
 	const handleGameStateChange = (selectedOption) => { set_gameState(selectedOption) }
 
-	let gameStateOptions: DropdownOption[] = [
+	let gameStateOptions: ValueLabelPair[] = [
 		{ value: 'leftWin', label: 'Left Win' },
 		{ value: 'rightWin', label: 'Right Win' },
 		{ value: 'tbd', label: 'TBD' }

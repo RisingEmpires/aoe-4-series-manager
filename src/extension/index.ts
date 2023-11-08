@@ -1,9 +1,15 @@
 import type NodeCG from '@nodecg/types';
 import { klona } from 'klona';
 
+interface ValueLabelPair {
+	value: string;
+	label: string;
+}
+
 interface DropdownOption {
 	value: string;
 	label: string;
+	picked?: boolean;
 }
 
 module.exports = function (nodecg: NodeCG.ServerAPI) {
@@ -12,9 +18,9 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
 	let gamesCount = nodecg.Replicant<number>('gamesCount', 'aoe-4-series-manager', { defaultValue: 0 })
 
 	//Get replicants from Civ Draft
-	let playedMap = nodecg.Replicant<DropdownOption>(`map1`, 'aoe4-map-selector')
+	let playedMap = nodecg.Replicant<ValueLabelPair>(`map1`, 'aoe4-map-selector')
 
-	let leftPicks = nodecg.Replicant<DropdownOption[]>('leftPicks', 'aoe-4-civ-draft');
+	let leftPicks = nodecg.Replicant<DropdownOption[]>('leftPicks', 'aoe-4-civ-draft', {defaultValue: [{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random", picked: false }]});
 	let leftPicksCount = nodecg.Replicant<number>('leftPicksCount', 'aoe-4-civ-draft');
 
 	let rightPicks = nodecg.Replicant<DropdownOption[]>('rightPicks', 'aoe-4-civ-draft');
@@ -41,7 +47,7 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
 	nodecg.listenFor('addLatestGame', async (leftSideWin: boolean) => {
 		let id: number | undefined = gamesCount.value + 1
 		console.log(`Made game ${id}`)
-		let map = nodecg.Replicant<DropdownOption>(`map${id}`)
+		let map = nodecg.Replicant<ValueLabelPair>(`map${id}`)
 
 		let leftSideCivs = nodecg.Replicant<DropdownOption[]>(`leftSideCivs${id}`)
 		let leftSideCount = nodecg.Replicant<number>(`leftSideCount${id}`)
@@ -50,7 +56,7 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
 		let rightSideCount = nodecg.Replicant<number>(`rightSideCount${id}`)
 
 		//let leftSideWinReplicant = nodecg.Replicant<boolean>(`leftSideWin${id}`)
-		let gameState = nodecg.Replicant<DropdownOption>(`gameState${id}`)
+		let gameState = nodecg.Replicant<ValueLabelPair>(`gameState${id}`)
 
 		await new Promise(r => setTimeout(r, 200));
 
@@ -69,17 +75,17 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
 		gamesCount.value++
 
 		if (resetDraft.value === true) {
-			leftPicks.value = [{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" }, { value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" }]
+			leftPicks.value = [{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random", picked: false }, { value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random", picked: false },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random", picked: false },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random", picked: false }]
 			//leftPicksCount.value = 1
 			
-			rightPicks.value = [{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" }, { value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" }]
+			rightPicks.value = [{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random", picked: false }, { value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random", picked: false },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random", picked: false },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random", picked: false }]
 			//rightPicksCount.value = 1
 			
 			if(lockBans.value == false){
-				leftBan.value = [{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" }, { value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" }]
+				leftBan.value = [{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random", picked: false }, { value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random", picked: false },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random", picked: false },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random", picked: false }]
 				//leftBanCount.value = 0
 
-				rightBan.value = [{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" }, { value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random" }]
+				rightBan.value = [{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random", picked: false }, { value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random", picked: false },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random", picked: false },{ value: "/assets/aoe-4-civ-draft/civs/Random.png", label: "Random", picked: false }]
 				//rightBanCount.value = 0
 			}
 
