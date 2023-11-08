@@ -35,6 +35,8 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
 	let resetDraft = nodecg.Replicant<boolean>(`resetDraft`)
 	let addToScore = nodecg.Replicant<boolean>(`addToScore`)
 	let setMapToRandom = nodecg.Replicant<boolean>(`setMapToRandom`)
+	let autoUpdateGraphics = nodecg.Replicant<boolean>('autoUpdateGraphics')
+	let updateSeriesGraphics = nodecg.Replicant<boolean>('updateGraphicsOnce');
 
 	let updateDraft = nodecg.Replicant<boolean>(`updateDraft`, 'aoe-4-civ-draft')
 
@@ -102,6 +104,10 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
 
 		if(setMapToRandom.value === true) {
 			playedMap.value = { value: '/assets/aoe4-map-selector/maps/Random.png', label: 'Random' }
+		}
+
+		if(autoUpdateGraphics.value === true) {
+			updateSeriesGraphics.value = !updateSeriesGraphics.value
 		}
 	})
 };
