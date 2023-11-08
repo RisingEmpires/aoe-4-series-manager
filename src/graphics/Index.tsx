@@ -16,6 +16,11 @@ export function Index() {
 
 	const [theme, set_theme] = useReplicant<{ value: string; label: string; }>('theme', { value: '../../../assets/nodecg-themer/themes/default.css', label: 'default' }, { namespace: 'nodecg-themer' });
 
+	const [updateGraphics, set_updateGraphics] = useReplicant<boolean>('updateGraphics', true);
+	const [updateGraphicsOnce, set_updateGraphicsOnce] = useReplicant<boolean>('updateGraphicsOnce', true);
+	const [updateGameGraphics, set_updateGameGraphics] = useReplicant<boolean>('updateGameGraphics', true);
+
+	const [graphics, set_graphics] = useState(<></>)
 	const [themeDiv, set_themeDiv] = useState(<></>)
 
 	useEffect(() => {
@@ -25,14 +30,55 @@ export function Index() {
 		set_themeDiv(<link rel='stylesheet' type='text/css' href={theme.value} />)
 	}, [theme])
 
+	useEffect(() => {
+		console.log("updating graphics")
+
+		const shittyUpdate = async () => {
+			function sleep(ms) {
+				return new Promise(resolve => setTimeout(resolve, ms));
+			}
+
+			console.log("updating graphics 2")
+			await sleep(200)
+			console.log("updating graphics 3")
+			set_graphics(<div className='series-games flex flex-row'>
+				{new Array(gamesCount).fill(undefined).map((_, i) => (
+					<GameDisplay key={i} id={i + 1} />
+					))}
+			</div>)
+			set_updateGameGraphics(!updateGameGraphics)
+			await sleep(500)
+			set_updateGraphics(!updateGraphics)
+		}
+
+		shittyUpdate()
+
+	}, [updateGraphicsOnce])
+
+	useEffect(() => {
+		// declare the async data fetching function
+		const shittyUpdate = async () => {
+			function sleep(ms) {
+				return new Promise(resolve => setTimeout(resolve, ms));
+			}
+
+			// waits for 1000ms
+			console.log("sleepy")
+			await sleep(200);
+			console.log("uwu")
+			set_updateGraphics(!updateGraphics)
+			set_updateGameGraphics(!updateGameGraphics)
+		};
+
+		shittyUpdate()
+	}, [])
+
 	const [gamesCount, set_gamesCount] = useReplicant<number>('gamesCount', 0)
 
 	return (
-		<div className='series-games flex flex-row'>
+		<div>
 			{themeDiv}
-			{new Array(gamesCount).fill(undefined).map((_, i) => (
-				<GameDisplay key={i} id={i + 1} />
-			))}
+			{graphics}
 		</div>
 	);
 }
@@ -51,11 +97,14 @@ const GameDisplay = ({ id }: Game) => {
 	//<img className={gameState.value == 'leftWin' ? 'm-auto civPick leftPick' : 'm-auto civPick leftPick civLose'} src={leftSideCivs[i]?.value} />
 
 	const [gameState, set_gameState] = useReplicant<DropdownOption>(`gameState${id}`, { value: 'tbd', label: 'TBD' })
+	const [updateGameGraphics, set_updateGameGraphics] = useReplicant<boolean>('updateGameGraphics', true);
 
 
+	const [graphics, set_graphics] = useState(<></>)
 
-	return (
-		<div className='flex flex-row px-4 series-game'>
+	useEffect(() => {
+		console.log("Rerendering Game")
+		set_graphics(<div className='flex flex-row px-4 series-game'>
 			<div className='series-civPicks series-leftPicks'>
 				{new Array(leftSideCount).fill(undefined).map((_, i) => (
 					<div className="series-civContainer">
@@ -77,6 +126,13 @@ const GameDisplay = ({ id }: Game) => {
 					</div>
 				))}
 			</div>
+		</div>)
+		console.log(map?.value)
+	}, [updateGameGraphics])
+
+	return (
+		<div>
+			{graphics}
 		</div>
 	)
 }

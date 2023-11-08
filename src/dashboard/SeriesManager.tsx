@@ -23,9 +23,9 @@ interface ValueLabelPair {
 }
 
 interface DropdownOption {
-    value: string;
-    label: string;
-    picked?: boolean;
+	value: string;
+	label: string;
+	picked?: boolean;
 }
 
 export function SeriesManager() {
@@ -39,9 +39,12 @@ export function SeriesManager() {
 	const [resetDraft, set_resetDraft] = useReplicant<boolean>('resetDraft', false)
 	const [addToScore, set_addToScore] = useReplicant<boolean>('addToScore', false)
 	const [setMapToRandom, set_setMapToRandom] = useReplicant<boolean>('setMapToRandom', false)
+	const [autoUpdateGraphics, set_autoUpdateGraphics] = useReplicant<boolean>('autoUpdateGraphics', false)
 
 	const [leftName, set_leftName] = useReplicant<string>('leftName', '', { namespace: 'aoe-4-civ-draft' });
 	const [rightName, set_rightName] = useReplicant<string>('rightName', '', { namespace: 'aoe-4-civ-draft' });
+
+	const [updateGraphics, set_updateGraphics] = useReplicant<boolean>('updateGraphicsOnce', true);
 
 	const leftWin = (event: any) => {
 		event.preventDefault();
@@ -72,23 +75,31 @@ export function SeriesManager() {
 					<br />
 					<label>Set Map to Random on Win</label>
 					<input type='checkbox' checked={setMapToRandom} onChange={(() => set_setMapToRandom(!setMapToRandom))} />
+					<br />
+					<label>Automatically update graphics on win</label>
+					<input type='checkbox' checked={autoUpdateGraphics} onChange={(() => set_autoUpdateGraphics(!autoUpdateGraphics))} />
 				</div>
 			</TECollapse>
 			<div className='flex flex-row justify-center w-full'>
-				<hr className='m-4 w-1/3' />
+				<hr className='m-4 mt-6 w-1/6' />
 				<button onClick={leftWin} className="leftSideButton mx-4 px-2 w-36" name="swapTeams">
 					{leftName ? `${leftName} Win` : 'Left Side Win'}
 				</button>
+
+				<button onClick={() => set_updateGraphics(!updateGraphics)}
+					className='updateDraft mx-4 px-2 w-1/4'>Update Graphics</button>
+
 				<button onClick={rightWin} className="rightSideButton mx-4 px-2 w-36" name="swapTeams">
 					{leftName ? `${rightName} Win` : 'Right Side Win'}
 				</button>
-				<hr className='m-4 w-1/3' />
+				<hr className='m-4 mt-6 w-1/6' />
 
 			</div>
 
 			<div>
+				<h1 className='w-1/4 m-auto flex justify-center text-xl text-center flex flex-row'>Game Count</h1>
 				<input
-					className='w-1/4 m-auto text-center flex flex-row'
+					className='w-1/5 m-auto text-center flex flex-row mb-8'
 					type="number"
 					min={0}
 					max={9}
@@ -130,7 +141,9 @@ const GameDisplay = ({ id }: Game) => {
 
 	const [gameState, set_gameState] = useReplicant<ValueLabelPair>(`gameState${id}`, { value: 'tbd', label: 'TBD' })
 
+	//@ts-ignore
 	const handleMapChange = (selectedOption) => { set_map(selectedOption) }
+	//@ts-ignore
 	const handleGameStateChange = (selectedOption) => { set_gameState(selectedOption) }
 
 	let gameStateOptions: ValueLabelPair[] = [
@@ -142,6 +155,7 @@ const GameDisplay = ({ id }: Game) => {
 	//Set the options in the dropdown menu to avaliable maps from /assets/aoe4-map-selector/maps
 	useEffect(() => {
 		if (!maps) return;
+		//@ts-ignore
 		let _array = []
 		maps.forEach((element, i) => {
 			var name = element.name
@@ -151,6 +165,7 @@ const GameDisplay = ({ id }: Game) => {
 		});
 		//@ts-ignore
 		_array.sort((a, b) => (a.label > b.label) ? 1 : ((b.label > a.label) ? -1 : 0))
+		//@ts-ignore
 		set_mapsOptions(_array);
 	}, [maps]);
 
@@ -184,6 +199,7 @@ const GameDisplay = ({ id }: Game) => {
 			<h1 className='flex justify-center text-2xl'>Game {id}</h1>
 			<div className='flex flex-row m-auto'>
 				<div className='leftCivs px-8 flex flex-col w-2/5'>
+					<h1 className='flex justify-center text-xl'>Played Civ Count</h1>
 					<input
 						className='w-1/4 mx-auto text-center'
 						type="number"
@@ -208,6 +224,7 @@ const GameDisplay = ({ id }: Game) => {
 				</div>
 
 				<div className='rightCivs px-8 flex flex-col w-2/5'>
+					<h1 className='flex justify-center text-xl'>Played Civ Count</h1>
 					<input
 						className='w-1/4 mx-auto text-center'
 						type="number"
