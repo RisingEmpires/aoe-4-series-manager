@@ -110,4 +110,35 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
 			updateSeriesGraphics.value = !updateSeriesGraphics.value
 		}
 	})
+
+	nodecg.listenFor('resetSeries', async query => {
+		nodecg.log.info(`Extension received the value ${query}!`);
+
+		let gamescount = nodecg.Replicant<number>(`gamesCount`)
+		
+		for (let i = 1; i < 10; i++) {
+			console.log(i)
+			let map = nodecg.Replicant<ValueLabelPair>(`map${i}`)
+			map.value = { value: '/assets/aoe4-map-selector/maps/Random.png', label: 'Random' }
+			
+			let leftSideCivs = nodecg.Replicant<DropdownOption[]>(`leftSideCivs${i}`)
+			leftSideCivs.value = [{value: '/assets/aoe-4-civ-draft/civs/Random.png', label: 'Random', picked: false}]
+			let leftSideCount = nodecg.Replicant<number>(`leftSideCount${i}`)
+			leftSideCount.value = 1
+			
+			let rightSideCivs = nodecg.Replicant<DropdownOption[]>(`rightSideCivs${i}`)
+			rightSideCivs.value = [{value: '/assets/aoe-4-civ-draft/civs/Random.png', label: 'Random', picked: false}]
+			let rightSideCount = nodecg.Replicant<number>(`rightSideCount${i}`)
+			rightSideCount.value = 1
+			
+			let gameState = nodecg.Replicant<ValueLabelPair>(`gameState${i}`)
+			gameState.value = { value: 'tbd', label: 'TBD' }
+			
+			
+		}
+		
+		gamesCount.value = 0;
+		
+		updateDraft.value = !updateDraft.value
+	})
 };

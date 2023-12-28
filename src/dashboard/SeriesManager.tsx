@@ -59,6 +59,12 @@ export function SeriesManager() {
 		//@ts-ignore
 		nodecg.sendMessage('addLatestGame', false)
 	}
+	
+	const resetSeries = () => {
+		console.log("Resetting Series to nothing")
+		//@ts-ignore
+		nodecg.sendMessage('resetSeries', "client")
+	}
 
 	return (
 		<>
@@ -80,6 +86,12 @@ export function SeriesManager() {
 					<input type='checkbox' checked={autoUpdateGraphics} onChange={(() => set_autoUpdateGraphics(!autoUpdateGraphics))} />
 				</div>
 			</TECollapse>
+
+			<div className='flex justify-center w-full pb-8'>
+				<button onClick={() => resetSeries()}
+					className='resetButton mx-4 px-2 w-1/4'>Reset Series</button>
+			</div>
+
 			<div className='flex flex-row justify-center w-full'>
 				<hr className='m-4 mt-6 w-1/6' />
 				<button onClick={leftWin} className="leftSideButton mx-4 px-2 w-36" name="swapTeams">
@@ -97,7 +109,7 @@ export function SeriesManager() {
 			</div>
 
 			<div>
-				<h1 className='w-1/4 m-auto flex justify-center text-xl text-center flex flex-row'>Game Count</h1>
+				<h1 className='w-1/4 m-auto flex justify-center text-xl text-center flex-row'>Game Count</h1>
 				<input
 					className='w-1/5 m-auto text-center flex flex-row mb-8'
 					type="number"
@@ -149,7 +161,8 @@ const GameDisplay = ({ id }: Game) => {
 	let gameStateOptions: ValueLabelPair[] = [
 		{ value: 'leftWin', label: 'Left Win' },
 		{ value: 'rightWin', label: 'Right Win' },
-		{ value: 'tbd', label: 'TBD' }
+		{ value: 'tbd', label: 'TBD' },
+		{ value: 'current', label: 'Current Game' }
 	]
 
 	//Set the options in the dropdown menu to avaliable maps from /assets/aoe4-map-selector/maps

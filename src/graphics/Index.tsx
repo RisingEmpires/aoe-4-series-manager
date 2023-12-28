@@ -108,8 +108,8 @@ const GameDisplay = ({ id }: Game) => {
 			<div className='series-civPicks series-leftPicks'>
 				{new Array(leftSideCount).fill(undefined).map((_, i) => (
 					<div className="series-civContainer">
-						<img className={`series-civPick series-leftPick ${gameState.value == 'rightWin' ? 'series-civLose' : ''}`} src={leftSideCivs[i]?.value} />
-						{gameState.value == 'rightWin' ? <div className='series-loseIcon'>╲</div> : ''}
+						<img className={`series-civPick series-leftPick ${gameState?.value == 'rightWin' ? 'series-civLose' : ''}`} src={leftSideCivs[i]?.value} />
+						{gameState?.value == 'rightWin' ? <div className='series-loseIcon'>╲</div> : ''}
 					</div>
 				))}
 			</div>
@@ -121,8 +121,8 @@ const GameDisplay = ({ id }: Game) => {
 			<div className='series-civPicks series-rightPicks'>
 				{new Array(rightSideCount).fill(undefined).map((_, i) => (
 					<div className="series-civContainer">
-						<img className={`series-civPick series-rightPick ${gameState.value == 'leftWin' ? 'series-civLose ' : ''} `} src={rightSideCivs[i]?.value} />
-						{gameState.value == 'leftWin' ? <div className='series-loseIcon'>╲</div> : ''}
+						<img className={`series-civPick series-rightPick ${gameState?.value == 'leftWin' ? 'series-civLose ' : ''} `} src={rightSideCivs[i]?.value} />
+						{gameState?.value == 'leftWin' ? <div className='series-loseIcon'>╲</div> : ''}
 					</div>
 				))}
 			</div>
