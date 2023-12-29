@@ -38,6 +38,7 @@ export function SeriesManager() {
 
 	const [resetDraft, set_resetDraft] = useReplicant<boolean>('resetDraft', false)
 	const [addToScore, set_addToScore] = useReplicant<boolean>('addToScore', false)
+	const [calculateScoreFromWins, set_calculateScoreFromWins] = useReplicant<boolean>('calculateScoreFromWins', false)
 	const [setMapToRandom, set_setMapToRandom] = useReplicant<boolean>('setMapToRandom', false)
 	const [autoUpdateGraphics, set_autoUpdateGraphics] = useReplicant<boolean>('autoUpdateGraphics', false)
 
@@ -59,11 +60,18 @@ export function SeriesManager() {
 		//@ts-ignore
 		nodecg.sendMessage('addLatestGame', false)
 	}
-	
+
 	const resetSeries = () => {
 		console.log("Resetting Series to nothing")
 		//@ts-ignore
 		nodecg.sendMessage('resetSeries', "client")
+		//@ts-ignore
+		nodecg.sendMessage('calculateScore', "client")
+	}
+
+	const calculateScore = () => {
+		//@ts-ignore
+		nodecg.sendMessage('calculateScore', "client")
 	}
 
 	return (
@@ -84,12 +92,18 @@ export function SeriesManager() {
 					<br />
 					<label>Automatically update graphics on win</label>
 					<input type='checkbox' checked={autoUpdateGraphics} onChange={(() => set_autoUpdateGraphics(!autoUpdateGraphics))} />
+					<br />
+					<label>Calculate Score From Wins</label>
+					<input type='checkbox' checked={calculateScoreFromWins} onChange={(() => set_calculateScoreFromWins(!calculateScoreFromWins))} />
 				</div>
 			</TECollapse>
 
 			<div className='flex justify-center w-full pb-8'>
 				<button onClick={() => resetSeries()}
 					className='resetButton mx-4 px-2 w-1/4'>Reset Series</button>
+
+				<button onClick={() => calculateScore()}
+					className='updateDraft mx-4 px-2 w-1/4'>Calculate Score</button>
 			</div>
 
 			<div className='flex flex-row justify-center w-full'>
@@ -153,10 +167,19 @@ const GameDisplay = ({ id }: Game) => {
 
 	const [gameState, set_gameState] = useReplicant<ValueLabelPair>(`gameState${id}`, { value: 'tbd', label: 'TBD' })
 
+	const [calculateScoreFromWins, set_calculateScoreFromWins] = useReplicant<boolean>('calculateScoreFromWins', false)
+
 	//@ts-ignore
 	const handleMapChange = (selectedOption) => { set_map(selectedOption) }
 	//@ts-ignore
-	const handleGameStateChange = (selectedOption) => { set_gameState(selectedOption) }
+	const handleGameStateChange = (selectedOption) => {
+		set_gameState(selectedOption)
+
+		if (calculateScoreFromWins) {
+			//@ts-ignore
+			nodecg.sendMessage('calculateScore', "client")
+		}
+	}
 
 	let gameStateOptions: ValueLabelPair[] = [
 		{ value: 'leftWin', label: 'Left Win' },

@@ -141,4 +141,35 @@ module.exports = function (nodecg: NodeCG.ServerAPI) {
 		
 		updateDraft.value = !updateDraft.value
 	})
+
+	nodecg.listenFor('calculateScore', async query => {
+		let gamescount = nodecg.Replicant<number>(`gamesCount`)
+
+		function sleep(ms: number | undefined) {
+			return new Promise(resolve => setTimeout(resolve, ms));
+		}
+
+		await sleep(200)
+
+		//console.log(gamesCount.value)
+
+		let leftWin = 0
+		let rightWin = 0
+
+		for (let i = 1; i < gamesCount.value + 1; i++) {
+		//	console.log(i)
+			let gameState = nodecg.Replicant<ValueLabelPair>(`gameState${i}`)
+			if(gameState.value?.value == "leftWin") {
+				leftWin++;
+			}
+			if(gameState.value?.value == "rightWin") {
+				rightWin++;
+			}
+		}
+
+		let leftScore = nodecg.Replicant<number>(`leftScore`, 'aoe4-score-display')
+		leftScore.value = leftWin
+		let rightScore = nodecg.Replicant<number>(`rightScore`, 'aoe4-score-display')
+		rightScore.value = rightWin
+	})
 };
