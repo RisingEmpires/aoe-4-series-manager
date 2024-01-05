@@ -21,6 +21,7 @@ export function Index() {
 	const [updateGameGraphics, set_updateGameGraphics] = useReplicant<boolean>('updateGameGraphics', true);
 
 	const [graphics, set_graphics] = useState(<></>)
+	const [graphicsHighlight, set_graphicsHighlight] = useState(<></>)
 	const [themeDiv, set_themeDiv] = useState(<></>)
 
 	useEffect(() => {
@@ -44,8 +45,15 @@ export function Index() {
 			set_graphics(<div className='series-games flex flex-row'>
 				{new Array(gamesCount).fill(undefined).map((_, i) => (
 					<GameDisplay key={i} id={i + 1} />
-					))}
+				))}
 			</div>)
+
+			set_graphicsHighlight(<div className='series-currentGameDiv flex flex-row'>
+				{new Array(gamesCount).fill(undefined).map((_, i) => (
+					<GameHighlightDisplay key={i} id={i + 1} />
+				))}
+			</div>)
+
 			set_updateGameGraphics(!updateGameGraphics)
 			await sleep(500)
 			set_updateGraphics(!updateGraphics)
@@ -79,6 +87,7 @@ export function Index() {
 		<div>
 			{themeDiv}
 			{graphics}
+			{graphicsHighlight}
 		</div>
 	);
 }
@@ -101,10 +110,11 @@ const GameDisplay = ({ id }: Game) => {
 
 
 	const [graphics, set_graphics] = useState(<></>)
+	const [graphicsHighlight, set_graphicsHighlight] = useState(<></>)
 
 	useEffect(() => {
 		console.log("Rerendering Game")
-		set_graphics(<div className='flex flex-row px-4 series-game'>
+		set_graphics(<div className={`flex flex-row px-4 series-game`}>
 			<div className='series-civPicks series-leftPicks'>
 				{new Array(leftSideCount).fill(undefined).map((_, i) => (
 					<div className="series-civContainer">
@@ -132,7 +142,71 @@ const GameDisplay = ({ id }: Game) => {
 
 	return (
 		<div>
-			{graphics}
+			<div>
+				{graphics}
+			</div>
+			<div>
+				{graphicsHighlight}
+			</div>
+		</div>
+	)
+}
+
+const GameHighlightDisplay = ({ id }: Game) => {
+
+	const [map, set_map] = useReplicant<DropdownOption>(`map${id}`, { value: '/assets/aoe4-map-selector/maps/Random.png', label: 'Random' })
+
+	const [leftSideCivs, set_leftSideCivs] = useReplicant<DropdownOption[]>(`leftSideCivs${id}`, [{ value: '/assets/aoe4-map-selector/maps/Random.png', label: 'Random' }])
+	const [leftSideCount, set_leftSideCount] = useReplicant<number>(`leftSideCount${id}`, 1)
+
+	const [rightSideCivs, set_rightSideCivs] = useReplicant<DropdownOption[]>(`rightSideCivs${id}`, [{ value: '/assets/aoe4-map-selector/maps/Random.png', label: 'Random' }])
+	const [rightSideCount, set_rightSideCount] = useReplicant<number>(`rightSideCount${id}`, 1)
+
+	//const [leftSideWin, set_leftSideWin] = useReplicant<boolean>(`leftSideWin${id}`, false)
+	//<img className={gameState.value == 'leftWin' ? 'm-auto civPick leftPick' : 'm-auto civPick leftPick civLose'} src={leftSideCivs[i]?.value} />
+
+	const [gameState, set_gameState] = useReplicant<DropdownOption>(`gameState${id}`, { value: 'tbd', label: 'TBD' })
+	const [updateGameGraphics, set_updateGameGraphics] = useReplicant<boolean>('updateGameGraphics', true);
+
+
+	const [graphics, set_graphics] = useState(<></>)
+	const [graphicsHighlight, set_graphicsHighlight] = useState(<></>)
+
+	useEffect(() => {
+		console.log("Rerendering Game")
+		if (gameState?.value == 'current') {
+			set_graphicsHighlight(<div className={`flex flex-row px-4 series-game ${gameState?.value == 'current' ? 'series-currentGameHighlight ' : ''} `}>
+				<div className='series-civPicks series-leftPicks'>
+					{new Array(leftSideCount).fill(undefined).map((_, i) => (
+						<div className="series-civContainer">
+							<img className={`series-civPick series-leftPick ${gameState?.value == 'rightWin' ? 'series-civLose' : ''}`} src={leftSideCivs[i]?.value} />
+							{gameState?.value == 'rightWin' ? <div className='series-loseIcon'>╲</div> : ''}
+						</div>
+					))}
+				</div>
+
+				<div className='series-map'>
+					<img className="m-auto series-map" src={map?.value} />
+				</div>
+
+				<div className='series-civPicks series-rightPicks'>
+					{new Array(rightSideCount).fill(undefined).map((_, i) => (
+						<div className="series-civContainer">
+							<img className={`series-civPick series-rightPick ${gameState?.value == 'leftWin' ? 'series-civLose ' : ''} `} src={rightSideCivs[i]?.value} />
+							{gameState?.value == 'leftWin' ? <div className='series-loseIcon'>╲</div> : ''}
+						</div>
+					))}
+				</div>
+			</div>)
+		} else {
+			set_graphicsHighlight(<></>)
+		}
+		console.log(map?.value)
+	}, [updateGameGraphics])
+
+	return (
+		<div>
+			{graphicsHighlight}
 		</div>
 	)
 }
